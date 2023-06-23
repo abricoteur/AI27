@@ -8,61 +8,43 @@ def phase1_run(hr):
     status = hr.turn_clockwise()
     print("\n=========== Status turn 1 ===========\n ")
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_clockwise()
     print("\n=========== Status turn 2 ===========\n ")
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_clockwise()
     print("\n=========== Status turn 3 ===========\n ")
     pprint(status)    
-    init_sat(status, f)
     status = hr.turn_clockwise()
     print("\n=========== Status turn 4 ===========\n ")
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_clockwise()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_anti_clockwise()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_clockwise()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     status = hr.turn_clockwise()
     pprint(status)
-    init_sat(status, f)
     status = hr.move()
     pprint(status)
-    init_sat(status, f)
     print("\n=========== Send content not complete map ===========\n ")
     # pprint(hr.send_content({(0, 0): HC.EMPTY}))
     print("\n=========== Send content true map ===========\n ")
@@ -72,22 +54,23 @@ def phase1_run(hr):
     # pprint(hr.send_content(complete_map_example))
     f.close()
 
+column = None
+line = None
 
 def coord_to_index(x,y) :
-    index = x + y
-    return index
+    return (column * (y+1)) - (column - (x+1)) 
 
 def index_to_coord(index) :
-    x = index
-    y = index
-    return (x,y)
+    y = (index-1) /column
+    x = (index-1) //column
+    return (x, y)
 
-def init_sat(status, file) :
-    for case in status.vision :
-        index = case[0]
-    file.write("0 0 0 \n")
+def init_sat(case, file) :
+    index = coord_to_index(case[0][0], case[0][1])
+    content = case[1]
+    print(index, content)
+    file.write("\n{} 0".format(((index-1) * 13) + content))
     return
-
 
 def main():
     hr = HitmanReferee()
@@ -95,16 +78,23 @@ def main():
     status = hr.start_phase1()
     print("\n=========== Status 1 ===========\n ")
     pprint(status)
-    phase1_run(hr)
-    _, score, history, true_map = hr.end_phase1()
+    global line
+    global column
+    line = status["m"]
+    column = status["n"]
 
-    print("\n=========== Score ===========\n ")
-    pprint(score)
-    print("\n=========== True Map ===========\n ")
-    pprint(true_map)
-    print("\n=========== History ===========\n ")
-    pprint(history)
+    for i in range(7):
+        for j in range(6):
+            init_sat(((i,j),1), open("sat.cnf", "a"))
+    # phase1_run(hr)
+    #_, score, history, true_map = hr.end_phase1()
 
+    #print("\n=========== Score ===========\n ")
+    #pprint(score)
+    #print("\n=========== True Map ===========\n ")
+    #pprint(true_map)
+    #print("\n=========== History ===========\n ")
+    #pprint(history)"""
 
 if __name__ == "__main__":
     main()
