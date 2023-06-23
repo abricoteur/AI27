@@ -12,11 +12,16 @@ class Map :
         self.known_case = 0
         self.status = hr.turn_clockwise()
         self.map = {}
+        self.heuristic_map = {}
+        self.civils_coord = []
         self.weapon = None
         self.target = None
         for  i in range(self.colonnes) :
             for j in range(self.lignes) :
                 self.map[(i,j)] = None
+        for  i in range(self.colonnes) :
+            for j in range(self.lignes) :
+                self.heuristic_map[(i,j)] = 1
         self.look_around()
     
     def __getitem__(self, key):
@@ -44,6 +49,10 @@ class Map :
                     self.weapon = coord
                 if element == HC.TARGET :
                     self.target = coord
+                if element == HC.CIVIL_E or element == HC.CIVIL_N or element == HC.CIVIL_S or element == HC.CIVIL_W :
+                    self.feed_heuristic_map(coord, "CIVIL")
+                if element == HC.GUARD_E or element == HC.GUARD_N or element == HC.GUARD_S or element == HC.GUARD_W :
+                    self.feed_heuristic_map(coord, "GUARD")
                 
                 
     def is_fully_explored(self) :
@@ -80,10 +89,10 @@ class Map :
                 break
             
             for voisin in self.get_neighbors(current):
-                nouveau_cout = cout_cumule[current] + 1
+                nouveau_cout = cout_cumule[current] + self.heuristic_map[voisin]
                 if voisin not in cout_cumule or nouveau_cout < cout_cumule[voisin]:
                     cout_cumule[voisin] = nouveau_cout
-                    priority = nouveau_cout + heuristic(goal, voisin)
+                    priority = nouveau_cout + self.heuristic(goal, voisin)
                     heapq.heappush(queue, (priority, voisin))
                     cases_parcourues[voisin] = current
 
@@ -156,14 +165,20 @@ class Map :
             self.look_around()
             print("Moved to :"+ str(self.status["position"]))
             
-        
-        
-
-
-def heuristic(a, b):
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
+    def heuristic(self, a, b):
+        (x1, y1) = a
+        (x2, y2) = b
+        return abs(x1 - x2) + abs(y1 - y2)
+    
+    def feed_heuristic_map(self, position, element) :
+        if element == "CIVIL" :
+            self.civils_coord.append(position)
+            return
+        (x,y) = position
+        vision_field = [(x-1, y),(x-2, y), (x+1, y),(x+2, y), (x, y-1),(x, y-2), (x, y+1),(x, y+2)]
+        for i in vision_field :
+            if i not in self.civils_coord :
+                self.heuristic_map[i] = 6
 
 
 
