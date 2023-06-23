@@ -187,22 +187,22 @@ def heuristic(a, b):
     #pprint(hr.send_content(complete_map_example))
     #f.close()
 
+column = None
+line = None
 
 def coord_to_index(x,y) :
-    index = x + y
-    return index
+    return (column * (y+1)) - (column - (x+1)) 
 
 def index_to_coord(index) :
-    x = index
-    y = index
-    return (x,y)
+    y = (index-1) /column
+    x = (index-1) //column
+    return (x, y)
 
-def init_sat(status, file) :
-    for case in status.vision :
-        index = case[0]
-    file.write("0 0 0 \n")
+def init_sat(case, file) :
+    index = coord_to_index(case[0][0], case[0][1])
+    content = case[1]
+    file.write("\n{} 0".format(((index-1) * 13) + content))
     return
-
 
 def main():
     hr = HitmanReferee()
@@ -253,6 +253,17 @@ def main():
     # print("\n=========== History ===========\n ")
     # pprint(history)
 
+    result = subprocess.run(["gophersat", "-verbose", "test.cnf"])
+
+    # phase1_run(hr)
+    #_, score, history, true_map = hr.end_phase1()
+
+    #print("\n=========== Score ===========\n ")
+    #pprint(score)
+    #print("\n=========== True Map ===========\n ")
+    #pprint(true_map)
+    #print("\n=========== History ===========\n ")
+    #pprint(history)"""
 
 if __name__ == "__main__":
     main()
