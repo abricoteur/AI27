@@ -1,5 +1,7 @@
 from hitman.hitman import HC, HitmanReferee, complete_map_example
 from pprint import pprint
+import subprocess
+import sys
 
 
 def phase1_run(hr):
@@ -68,7 +70,6 @@ def index_to_coord(index) :
 def init_sat(case, file) :
     index = coord_to_index(case[0][0], case[0][1])
     content = case[1]
-    print(index, content)
     file.write("\n{} 0".format(((index-1) * 13) + content))
     return
 
@@ -86,6 +87,9 @@ def main():
     for i in range(7):
         for j in range(6):
             init_sat(((i,j),1), open("sat.cnf", "a"))
+
+    result = subprocess.run(["gophersat", "-verbose", "test.cnf"])
+
     # phase1_run(hr)
     #_, score, history, true_map = hr.end_phase1()
 
