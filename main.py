@@ -1,6 +1,8 @@
 from hitman.hitman import HC, HitmanReferee, complete_map_example
 from pprint import pprint
 import heapq
+import sys
+import subprocess
 
 class Map :
     def __init__(self, m, n, hr) :
@@ -8,6 +10,7 @@ class Map :
         self.hr = hr
         self.lignes = m
         self.colonnes = n
+        self.file = open("sat.cnf","a")
         self.total_case = m*n
         self.known_case = 0
         self.status = hr.turn_clockwise()
@@ -87,6 +90,7 @@ class Map :
             coord,element = value
             
             if self.map[coord] == None :
+                self.init_sat(value)
                 self.known_case += 1
             self.map[coord] = element
             if element == HC.PIANO_WIRE :
@@ -101,7 +105,8 @@ class Map :
                 guard_in_front = element
                 self.feed_heuristic_map(coord, element)
         
-        
+            
+
         if(self.status["is_in_guard_range"]):
             if guard_in_front is None:
                 return
@@ -117,6 +122,7 @@ class Map :
                     for value in self.status["vision"]:
                         coord,element = value
                         if self.map[coord] == None :
+                            self.init_sat(value)
                             self.known_case += 1
                         self.map[coord] = element
                         if element == HC.PIANO_WIRE :
@@ -138,6 +144,7 @@ class Map :
                 for value in self.status["vision"]:
                     coord,element = value
                     if self.map[coord] == None :
+                        self.init_sat(value)
                         self.known_case += 1
                     self.map[coord] = element
                     if element == HC.PIANO_WIRE :
@@ -296,24 +303,19 @@ class Map :
             else :
                 print("Obstacle blocking vision field")
             case += 1
+
+    def coord_to_index(self, x,y) :
+        return (self.colonnes * (y+1)) - (self.colonnes - (x+1)) 
+
+    def index_to_coord(self, index) :
+        y = (index-1) /self.colonnes
+        x = (index-1) //self.colonnes
+        return (x, y)
+
+    def init_sat(self, case) :
+        index = self.coord_to_index(case[0][0], case[0][1])
+        self.file.write("\n{} 0".format(((index-1) * 13) + case[1].value))
                 
-  
-column = None
-line = None
-
-def coord_to_index(x,y) :
-    return (column * (y+1)) - (column - (x+1)) 
-
-def index_to_coord(index) :
-    y = (index-1) /column
-    x = (index-1) //column
-    return (x, y)
-
-def init_sat(case, file) :
-    index = coord_to_index(case[0][0], case[0][1])
-    content = case[1]
-    file.write("\n{} 0".format(((index-1) * 13) + content))
-    return
 
 def main():
     hr = HitmanReferee()
@@ -369,31 +371,8 @@ def main():
         print("Target killed, going back home !")
     pprint(score)
     
-    
-    
+    result = subprocess.run(["gophersat", "-verbose", "sat.cnf"])
 
-    
-    
-    # _, score, history, true_map = hr.end_phase1()
-
-    # print("\n=========== Score ===========\n ")
-    # pprint(score)
-    # print("\n=========== True Map ===========\n ")
-    # pprint(true_map)
-    # print("\n=========== History ===========\n ")
-    # pprint(history)
-
-    result = subprocess.run(["gophersat", "-verbose", "test.cnf"])
-
-    # phase1_run(hr)
-    #_, score, history, true_map = hr.end_phase1()
-
-    #print("\n=========== Score ===========\n ")
-    #pprint(score)
-    #print("\n=========== True Map ===========\n ")
-    #pprint(true_map)
-    #print("\n=========== History ===========\n ")
-    #pprint(history)"""
 
 if __name__ == "__main__":
     main()
