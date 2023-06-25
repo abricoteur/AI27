@@ -4,11 +4,13 @@
 ### Modélisation STRIPS
 
 
-##### Fluents :
+##### Fluents
+***
 
     On(a, X), Empty(x), Item(a, Hitman)
 
-##### Etat initial :
+##### Etat initial
+***
 
     Init(Case((0,0)) ∧ Case(0,1) ∧ ... Case(0,5) ∧ 
      Case(1,0) ∧ Case(1,1) ∧ ... ∧ Case(1,5) ∧
@@ -30,11 +32,13 @@
      Empty(6,3) ∧ Empty(6,4) ∧ 
      )
 
-##### But : 
+##### But
+***
 
     ¬On(Target, (x, y))
 
-##### Actions :
+##### Actions
+***
 
     Action(Turn_horaire_N(a))
     Precond:
