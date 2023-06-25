@@ -147,10 +147,10 @@
 ***
 ### Fonctionnement du projet
 
-Pour faire fonctionner notre projet, il suffirat simplement d'exécuter le scritp main.py.
-Celui-ci lancera les deux phases du jeu en affichant les principales informations liée à la partie en cours.
-Il se chargera également de créer un fichier au format DIMACS (sat.cnf) dont les clauses correspondent aux informations recueuilli durant la partie.
-sat.cnf sera par la suite résolu par un solveur SAT (gophersat.exe).
+Pour faire fonctionner notre projet, il suffirat simplement d'exécuter le script main.py.
+Celui-ci lancera les deux phases de jeu en affichant les principales informations liée à la partie en cours.
+Il se chargera également de créer un fichier au format DIMACS (sat.cnf) dont les clauses correspondent aux informations recueuillies durant la partie.
+Le fichier sat.cnf sera par la suite résolu par un solveur SAT (gophersat.exe).
 
 ***
 ### Forces de notre programme
