@@ -10,6 +10,8 @@ class Map :
         self.hr = hr
         self.lignes = m
         self.colonnes = n
+        self.file = open("sat.cnf","w")
+        self.file.write("p cnf 546 100\n")
         self.file = open("sat.cnf","a")
         self.total_case = m*n
         self.known_case = 0
@@ -257,6 +259,8 @@ class Map :
                         break
                     self.status = self.hr.move()
                     self.look_around()
+        self.file.write("\n")
+        self.file.close()
         
     def go_to(self, objectif ) :
         
@@ -371,6 +375,7 @@ def main():
         print("Target killed, going back home !")
     pprint(score)
     
+    print("\n=========== SAT ===========\n ")
     result = subprocess.run(["gophersat", "-verbose", "sat.cnf"])
 
 
