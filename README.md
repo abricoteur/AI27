@@ -158,5 +158,20 @@ Le fichier sat.cnf sera par la suite résolu par un solveur SAT (gophersat.exe).
 
 ***
 ### Forces de notre programme
+
+- A-star lié avec une carte d'heuristique pour la recherche qui permet un pathing dynamique, donc le chemin est optimisé à chaque nouvelles informations.
+- A-Star pour la PHASE 2 ce qui fait que nous avons un chemin optimal.
+- Système qui permet de savoir dans quelle direction il est nécessaire de se tourner.
+- Système pour se réorienter avec le moins de coup possible.
+- Heuristique qui prend en compte le fait de devoir se réorienter.
+- La carte d'heuristique permet de gérer les cas où un objet ou civil bloque la vue des PNJs.
+  
 ***
 ### Faiblesses de notre programme
+
+- Nous avons abandonné l'usage du costume car le calcul de l'heuristique était incorrect ce qui menait à des scores moins bons.
+- Nous n'utilisons pas le SAT pour faire des prédictions car avec notre implémentation il nous menait à des scores moins bons (BUG).
+- Notre heuristique fait que Hitman prend des chemins qui le font se tourner plus en PHASE 2 et nous n'avons pas réussi à le résoudre, en PHASE 1 il n'y a pas de problèmes.
+- Nous avons abandonné l'idée de la carte de possibilités qui se remplirait avec l'audition et qui permettrait de faire des hypothèses.
+- Nous n'avons pas segmenté la carte en sous-zone à explorer ce qui fait que nous avons parfois besoin de faire le tour de la map pour 1 case à explorer.
+- Nous ne prenons pas en compte la possibilité de neutraliser un garde ou civil pour augmenter le score.
